@@ -20,7 +20,7 @@
             background: linear-gradient(135deg, #090d16 0%, #0c1c1e 100%);
         }
         .glow-green {
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 15px rgba(20, 184, 166, 0.4);
         }
         .shake {
             animation: shake 0.5s ease-in-out;
@@ -29,6 +29,70 @@
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-6px); }
             75% { transform: translateX(6px); }
+        }
+
+        /* Task Guide Card Styles integrated from Syllabus Automation Script */
+        .task-guide {
+            display: grid;
+            grid-template-columns: 1.1fr 2fr 1.25fr .75fr;
+            gap: 12px;
+            margin: 0 0 20px;
+            padding: 14px;
+            background: rgba(240, 253, 244, 0.05);
+            border: 2px solid #14b8a6;
+            border-radius: 17px;
+            color: #e2e8f0;
+        }
+        .task-box {
+            min-width: 0;
+            padding: 10px 11px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+        }
+        .task-box .label {
+            display: block;
+            font-size: .7rem;
+            font-weight: 950;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: #14b8a6;
+            margin-bottom: 4px;
+        }
+        .task-box b {
+            font-size: .85rem;
+            line-height: 1.2;
+            display: block;
+        }
+        .task-steps {
+            margin: 0;
+            padding-left: 14px;
+            font-size: .8rem;
+            color: #cbd5e1;
+            list-style-type: decimal;
+        }
+        .task-steps li {
+            margin: 2px 0;
+        }
+        .task-done {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: #059669;
+        }
+        .task-time {
+            background: rgba(249, 115, 22, 0.1);
+            border-color: #ea580c;
+            text-align: center;
+        }
+        .task-time b {
+            font-size: 1.1rem;
+            color: #f97316;
+            margin-top: 4px;
+        }
+        @media(max-width:900px){
+            .task-guide { grid-template-columns: 1fr 1fr; }
+        }
+        @media(max-width:600px){
+            .task-guide { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -90,15 +154,25 @@
     <main class="flex-grow max-w-5xl w-full mx-auto p-6 flex flex-col justify-center">
         
         <!-- SCREEN 1: WELCOME & ONBOARDING -->
-        <section id="screen-welcome" class="bg-slate-900/70 border border-teal-500/20 rounded-2xl p-8 text-center max-w-2xl mx-auto glow-green">
-            <div class="text-6xl text-teal-400 mb-4 animate-pulse"><i class="fa-solid fa-microchip"></i></div>
-            <h2 class="header-font text-2xl font-bold tracking-wider text-slate-100 mb-2">GRID CONNECTIVITY CALIBRATION</h2>
-            <p class="text-slate-300 mb-6 text-base leading-relaxed">
-                Welcome to the Technical English Inquiry Portal. Communication is critical. Weak or vague enquiries trigger system errors. Let's calibrate your grid communication profile to proceed.
-            </p>
-            <div class="space-y-4">
-                <input type="text" id="username-input" placeholder="ENTER YOUR TRAINEE NAME" class="w-full bg-slate-950 border border-teal-500/30 rounded-lg py-3 px-4 text-center text-teal-400 font-bold placeholder-slate-700 focus:outline-none focus:border-teal-500 uppercase tracking-widest">
-                <button onclick="saveOnboarding()" class="w-full bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold py-4 rounded-lg hover:from-teal-400 hover:to-emerald-400 transition-all duration-300 shadow-lg header-font tracking-wider">LOAD INTERACTIVE MAP</button>
+        <section id="screen-welcome" class="bg-slate-900/70 border border-teal-500/20 rounded-2xl p-8 max-w-2xl mx-auto glow-green">
+            <!-- Official Task Guide 1 -->
+            <div class="task-guide">
+                <div class="task-box"><span class="label">Goal</span><b>Know today's mission and final role-play outcome.</b></div>
+                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Enter your Call Sign below.</li><li>Configure your specialist helmet avatar.</li><li>Click the initialization button.</li></ol></div>
+                <div class="task-box task-done"><span class="label">Complete when</span><b>You can explain what you will do today.</b></div>
+                <div class="task-box task-time"><span class="label">Time</span><b>5 min</b></div>
+            </div>
+
+            <div class="text-center">
+                <div class="text-6xl text-teal-400 mb-4 animate-pulse"><i class="fa-solid fa-microchip"></i></div>
+                <h2 class="header-font text-2xl font-bold tracking-wider text-slate-100 mb-2">GRID CONNECTIVITY CALIBRATION</h2>
+                <p class="text-slate-300 mb-6 text-base leading-relaxed">
+                    Welcome to the Technical English Inquiry Portal. Communication is critical. Weak or vague enquiries trigger system errors. Let's calibrate your grid communication profile to proceed.
+                </p>
+                <div class="space-y-4">
+                    <input type="text" id="username-input" placeholder="ENTER YOUR TRAINEE NAME" class="w-full bg-slate-950 border border-teal-500/30 rounded-lg py-3 px-4 text-center text-teal-400 font-bold placeholder-slate-750 focus:outline-none focus:border-teal-500 uppercase tracking-widest">
+                    <button onclick="saveOnboarding()" class="w-full bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold py-4 rounded-lg hover:from-teal-400 hover:to-emerald-400 transition-all duration-300 shadow-lg header-font tracking-wider">LOAD INTERACTIVE MAP</button>
+                </div>
             </div>
         </section>
 
@@ -120,9 +194,9 @@
                     <div>
                         <label class="block text-sm text-slate-400 uppercase tracking-wider mb-2">Select Field Helmet</label>
                         <div class="grid grid-cols-3 gap-2">
-                            <button onclick="changeAvatar('user-gear', '#14b8a6')" class="bg-slate-900 p-3 rounded-lg border border-teal-500/30 text-teal-400 hover:bg-slate-800 transition">⚙️ Technician</button>
-                            <button onclick="changeAvatar('user-astronaut', '#f97316')" class="bg-slate-900 p-3 rounded-lg border border-slate-800 hover:bg-slate-800 transition">☀️ Solar Team</button>
-                            <button onclick="changeAvatar('user-shield', '#3b82f6')" class="bg-slate-900 p-3 rounded-lg border border-slate-800 hover:bg-slate-800 transition">🛡️ Safety Officer</button>
+                            <button onclick="changeAvatar('user-gear', '#14b8a6')" class="bg-slate-900 p-3 rounded-lg border border-teal-500/30 text-teal-400 hover:bg-slate-800 transition">⚙️ Tech</button>
+                            <button onclick="changeAvatar('user-astronaut', '#f97316')" class="bg-slate-900 p-3 rounded-lg border border-slate-800 hover:bg-slate-800 transition">☀️ Solar</button>
+                            <button onclick="changeAvatar('user-shield', '#3b82f6')" class="bg-slate-900 p-3 rounded-lg border border-slate-800 hover:bg-slate-800 transition">🛡️ Safety</button>
                         </div>
                     </div>
                     <div>
@@ -140,14 +214,22 @@
 
         <!-- SCREEN 3: ACTIVITY 1 - MESSAGE SIGNAL CHECK -->
         <section id="screen-act1" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-2xl mx-auto w-full">
-            <div class="flex justify-between items-center mb-6">
+            <!-- Official Task Guide 2 -->
+            <div class="task-guide">
+                <div class="task-box"><span class="label">Goal</span><b>Identify polite language and analyze clarity constraints.</b></div>
+                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Read the incoming transmission box.</li><li>Evaluate grammar vs. detail completeness.</li><li>Pick the missing clarity fix.</li></ol></div>
+                <div class="task-box task-done"><span class="label">Complete when</span><b>Antenna signal is perfectly calibrated (100%).</b></div>
+                <div class="task-box task-time"><span class="label">Time</span><b>10 min</b></div>
+            </div>
+
+            <div class="flex justify-between items-center mb-6 border-t border-slate-800/80 pt-4">
                 <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Activity 1: Message Signal Check</span>
                 <span class="text-xs text-slate-400">Power: <span id="antenna-status" class="text-orange-400 font-bold">CALIBRATING</span></span>
             </div>
             
-            <h2 class="header-font text-xl font-bold mb-2">📶 STEP 1: ANALYZE SYSTEM SIGNAL STABILITY</h2>
+            <h2 class="header-font text-xl font-bold mb-2">📶 CLASSIFY THE COMMUNICATION SIGNAL</h2>
             <p class="text-slate-300 text-sm mb-6">
-                <strong>Situation:</strong> An electrical technician urgently needs the latest transformer inspection report. <br>
+                <strong>Situation:</strong> A technician needs the latest transformer inspection report. <br>
                 Review the incoming message box below and evaluate its communication quality.
             </p>
             
@@ -175,7 +257,7 @@
                 </div>
             </div>
 
-            <!-- Task Phase B: Follow-up decision (Hidden initially) -->
+            <!-- Task Phase B: Follow-up decision -->
             <div id="act1-phaseB" class="hidden space-y-4">
                 <div class="p-3 bg-teal-950/30 border border-teal-500/30 rounded-lg text-sm text-teal-300">
                     <strong>Excellent analysis!</strong> Indeed, the phrase "the report" and "when possible" are vague. To fix this signal static, we must inject clarity.
@@ -202,12 +284,20 @@
 
         <!-- SCREEN 4: ACTIVITY 2 - MISSING INFORMATION DETECTOR -->
         <section id="screen-act2" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-3xl mx-auto w-full">
-            <div class="flex justify-between items-center mb-6">
-                <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Activity 2: Missing Information Detector</span>
+            <!-- Official Task Guide 3 -->
+            <div class="task-guide">
+                <div class="task-box"><span class="label">Goal</span><b>Audit technical notices and match enquiries to missing details.</b></div>
+                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Read the flyer. Identify exactly 3 missing items.</li><li>Match each missing parameter with a precise, professional inquiry.</li></ol></div>
+                <div class="task-box task-done"><span class="label">Complete when</span><b>The 3 missing elements are matched with 100% precision.</b></div>
+                <div class="task-box task-time"><span class="label">Time</span><b>15 min</b></div>
+            </div>
+
+            <div class="flex justify-between items-center mb-6 border-t border-slate-800/80 pt-4">
+                <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Activity 2: Missing Info Detector</span>
                 <span class="text-xs text-slate-400">Status: <span class="text-teal-400 font-bold">Auditing Document...</span></span>
             </div>
             
-            <h2 class="header-font text-xl font-bold mb-2">🔍 STEP 2: AUDITING TECHNICAL BULLETIN FOR MISSING DETAILS</h2>
+            <h2 class="header-font text-xl font-bold mb-2">🔍 DETECT MISSING INFORMATION FROM BULLETIN</h2>
             <p class="text-slate-300 text-sm mb-4">
                 <strong>Task:</strong> Read the technical advertisement below. Click to identify exactly <strong>three vital pieces of information</strong> missing from this service flyer.
             </p>
@@ -222,7 +312,7 @@
             </div>
 
             <!-- Option Checklist -->
-            <div id="act2-detectors" class="grid grid-cols-2 gap-2 mb-6">
+            <div id="act2-detectors" class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-6">
                 <button onclick="toggleAct2Badge('fee', true)" id="badge-fee" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">💰 Service Fee (Cost)</button>
                 <button onclick="toggleAct2Badge('area', true)" id="badge-area" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">📍 Service Coverage Area</button>
                 <button onclick="toggleAct2Badge('avail', true)" id="badge-avail" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">📅 Appointment Availability</button>
@@ -231,7 +321,7 @@
                 <button onclick="toggleAct2Badge('color', false)" id="badge-color" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">🎨 Office Wall Colour</button>
             </div>
 
-            <!-- Match Part (Hidden initially) -->
+            <!-- Match Part -->
             <div id="act2-match-area" class="hidden border-t border-slate-800 pt-4 space-y-4">
                 <div class="p-3 bg-teal-950/30 border border-teal-500/30 rounded-lg text-sm text-teal-300">
                     <strong>Auditing Complete!</strong> You have found the missing details. Now, select the most **precise, professional and polite enquiry** to ask about <strong>Appointment Availability</strong>:
@@ -257,16 +347,30 @@
             <div id="act2-error" class="hidden mt-4 p-3 bg-red-950/40 border border-red-500/40 rounded-lg text-xs text-red-400">
                 Mismatch or incorrect parameter selection. Review the options and try again.
             </div>
+            
+            <!-- Helpful Tooltip overlay for mistake recovery -->
+            <div id="language-tip-box" class="hidden mt-6 p-4 bg-slate-950/80 border-l-4 border-orange-500 rounded-lg text-sm text-slate-300">
+                <div class="font-bold text-orange-400 uppercase text-xs mb-1">💡 Language Coaching Hint</div>
+                <p id="language-tip-text">Tip text...</p>
+            </div>
         </section>
 
         <!-- SCREEN 5: ACTIVITY 3 - ENQUIRY QUALITY RANKING -->
         <section id="screen-act3" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-3xl mx-auto w-full">
-            <div class="flex justify-between items-center mb-6">
+            <!-- Official Task Guide 4 -->
+            <div class="task-guide">
+                <div class="task-box"><span class="label">Goal</span><b>Evaluate, compare, and rank the effectiveness of enquiries.</b></div>
+                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Rank options A, B, and C (1 = Best, 3 = Weakest).</li><li>Identify the technical criteria behind the top ranking.</li></ol></div>
+                <div class="task-box task-done"><span class="label">Complete when</span><b>Ranking order and the evaluation justification are fully aligned.</b></div>
+                <div class="task-box task-time"><span class="label">Time</span><b>15 min</b></div>
+            </div>
+
+            <div class="flex justify-between items-center mb-6 border-t border-slate-800/80 pt-4">
                 <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Activity 3: Enquiry Quality Ranking</span>
                 <span class="text-xs text-slate-400">Parameter: <span class="text-teal-400 font-bold">Evaluating Priority</span></span>
             </div>
             
-            <h2 class="header-font text-xl font-bold mb-2">⚖️ STEP 3: ARRANGE ENQUIRIES BY EFFECTIVENESS</h2>
+            <h2 class="header-font text-xl font-bold mb-2">⚖️ ARRANGE ENQUIRIES BY EFFECTIVENESS</h2>
             <p class="text-slate-300 text-sm mb-6">
                 <strong>Situation:</strong> You need to request the latest high-voltage safety procedures document. <br>
                 Rank the three acceptable enquiries below from <strong>Most Effective (Rank 1)</strong> to <strong>Least Effective (Rank 3)</strong>.
@@ -315,9 +419,9 @@
             </div>
 
             <!-- Verification Button -->
-            <button onclick="verifyAct3Ranking()" class="w-full mt-6 bg-slate-800 border border-slate-700 text-slate-200 py-3 rounded-lg hover:border-teal-500 hover:text-teal-400 text-xs uppercase tracking-wider font-bold transition">Verify Ranking Sequence</button>
+            <button onclick="verifyAct3Ranking()" class="w-full mt-6 bg-slate-850 border border-slate-700 text-slate-200 py-3 rounded-lg hover:border-teal-500 hover:text-teal-400 text-xs uppercase tracking-wider font-bold transition">Verify Ranking Sequence</button>
 
-            <!-- Reason Section (Hidden initially) -->
+            <!-- Reason Section -->
             <div id="act3-reason-area" class="hidden border-t border-slate-800 mt-6 pt-4 space-y-4">
                 <div class="p-3 bg-teal-950/30 border border-teal-500/30 rounded-lg text-sm text-teal-300">
                     <strong>Perfect Sequence!</strong> Option B is Rank 1, Option A is Rank 2, and Option C is Rank 3.
@@ -344,14 +448,22 @@
 
         <!-- SCREEN 6: ACTIVITY 4 - BUILD THE COMMUNICATION CHAIN -->
         <section id="screen-act4" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-4xl mx-auto w-full">
-            <div class="flex justify-between items-center mb-4">
+            <!-- Official Task Guide 5 -->
+            <div class="task-guide">
+                <div class="task-box"><span class="label">Goal</span><b>Sequence dialogue chronologically and label functional circuit steps.</b></div>
+                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li><b>Task A:</b> delete the irrelevant sentence.</li><li><b>Task B:</b> place blocks 1 to 6 in order.</li><li><b>Task C:</b> label each block with its function.</li></ol></div>
+                <div class="task-box task-done"><span class="label">Complete when</span><b>Order and labels match the Communication Circuit perfectly.</b></div>
+                <div class="task-box task-time"><span class="label">Time</span><b>30 min</b></div>
+            </div>
+
+            <div class="flex justify-between items-center mb-4 border-t border-slate-800/80 pt-4">
                 <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Activity 4: Circuit Connection</span>
                 <button onclick="toggleAct4Hint()" class="bg-slate-800 hover:bg-slate-700 text-teal-400 px-3 py-1 rounded text-xs uppercase font-bold tracking-wider"><i class="fa-solid fa-lightbulb mr-1"></i> Hint Pathway</button>
             </div>
             
-            <h2 class="header-font text-xl font-bold mb-1">🔌 RECONNECTING THE CIRCUIT CHANNEL</h2>
-            <p class="text-slate-300 text-xs mb-6">
-                <strong>Syllabus Target 3.1.7:</strong> Arrange the logical sequence of enquiry and response contents. <br>
+            <h2 class="header-font text-xl font-bold mb-1">🔌 ARRANGE THE ENQUIRY IN THE CORRECT ORDER</h2>
+            <p class="text-slate-400 text-xs mb-6">
+                <strong>Mission:</strong> Reconnect the Communication Circuit (Syllabus Target 3.1.7). <br>
                 Complete Tasks A, B, and C in order to synchronize the network lines.
             </p>
 
@@ -379,7 +491,7 @@
                 </div>
             </div>
 
-            <!-- Task Phase B & C: Arrange and Label (Hidden initially) -->
+            <!-- Task Phase B & C: Arrange and Label -->
             <div id="act4-taskB" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <!-- Drop Slots -->
                 <div class="space-y-2">
@@ -409,7 +521,15 @@
 
         <!-- SCREEN 7: FINAL PERFORMANCE AUDIT (Inbox Challenge) -->
         <section id="screen-audit" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-2xl mx-auto w-full">
-            <div class="flex justify-between items-center mb-6">
+            <!-- Official Task Guide 6 -->
+            <div class="task-guide">
+                <div class="task-box"><span class="label">Goal</span><b>Perform complete enquiry review & analyze response relevance.</b></div>
+                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Compare the customer enquiry with the supplier's response.</li><li>Detect and highlight the missing unanswered questions.</li></ol></div>
+                <div class="task-box task-done"><span class="label">Complete when</span><b>The final system audit is successfully cleared.</b></div>
+                <div class="task-box task-time"><span class="label">Time</span><b>23 min</b></div>
+            </div>
+
+            <div class="flex justify-between items-center mb-6 border-t border-slate-800/80 pt-4">
                 <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Final Audit</span>
                 <span class="text-xs text-slate-400">Challenge: <strong id="audit-step-label">Inbox Audit</strong></span>
             </div>
@@ -850,6 +970,7 @@
             });
         }
 
+        // SEQUENCE ASSEMBLY FUNCTIONS
         function mountAct4Item(item) {
             const nextIdx = player.act4Order.findIndex(x => x === null);
             if (nextIdx !== -1) {
@@ -879,7 +1000,6 @@
                 return;
             }
 
-            // Verify chronological step order and corresponding function labels
             const isOrderCorrect = player.act4Order.every((item, idx) => item.correctStep === idx + 1);
             const isLabelsCorrect = player.act4Order.every((item, idx) => player.act4Labels[idx] === item.label);
 
@@ -926,7 +1046,7 @@
         function completeAssessment() {
             showScreen("screen-cert");
             document.getElementById("cert-score").innerText = `${player.score} XP`;
-            document.getElementById("cert-id").innerText = `DUE-9922-SOLAR-${Math.floor(1000 + Math.random() * 9000)}`;
+            document.getElementById("cert-id").innerText = `DUE-2026-OK-${Math.floor(1000 + Math.random() * 9000)}`;
         }
 
         function resetSimulator() {
@@ -948,8 +1068,6 @@
             document.getElementById("act1-phaseB").classList.add("hidden");
             document.getElementById("antenna-status").innerText = "CALIBRATING";
             document.getElementById("antenna-status").className = "text-orange-400 font-bold";
-            document.getElementById("signal-bar").style.width = "0%";
-            document.getElementById("signal-percent").innerText = "0% Connected";
 
             // Act 2 reset
             document.getElementById("act2-match-area").classList.add("hidden");
