@@ -3,1080 +3,477 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUE10062: Professional Technical Enquiry Simulator</title>
-    <!-- Tailwind CSS for Modern Styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>DUE10062: Helpdesk Hero Game Client</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
-        
-        .tech-font {
-            font-family: 'Rajdhani', sans-serif;
-        }
-        .header-font {
-            font-family: 'Orbitron', sans-serif;
-        }
-        .energy-gradient {
-            background: linear-gradient(135deg, #090d16 0%, #0c1c1e 100%);
-        }
-        .glow-green {
-            box-shadow: 0 0 15px rgba(20, 184, 166, 0.4);
-        }
-        .shake {
-            animation: shake 0.5s ease-in-out;
-        }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
+        :root {
+            --neon-green: #39ff14;
+            --dark-bg: #0a0e14;
+            --panel-bg: #151e2b;
+            --text-color: #e2e8f0;
+            --border-color: #2a3e59;
+            --accent-blue: #00d2ff;
+            --alert-red: #ff3860;
         }
 
-        /* Task Guide Card Styles integrated from Syllabus Automation Script */
-        .task-guide {
-            display: grid;
-            grid-template-columns: 1.1fr 2fr 1.25fr .75fr;
-            gap: 12px;
-            margin: 0 0 20px;
-            padding: 14px;
-            background: rgba(240, 253, 244, 0.05);
-            border: 2px solid #14b8a6;
-            border-radius: 17px;
-            color: #e2e8f0;
+        /* Glitch overlay if <!doctype html> is missing (Simulated here inside the game wrapper) */
+        .glitch-active {
+            font-family: 'Courier New', Courier, monospace !important;
+            background: #2a0000 !important;
+            color: #ff3333 !important;
         }
-        .task-box {
-            min-width: 0;
-            padding: 10px 11px;
-            border-radius: 12px;
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid #334155;
-        }
-        .task-box .label {
-            display: block;
-            font-size: .7rem;
-            font-weight: 950;
-            letter-spacing: .06em;
-            text-transform: uppercase;
-            color: #14b8a6;
-            margin-bottom: 4px;
-        }
-        .task-box b {
-            font-size: .85rem;
-            line-height: 1.2;
-            display: block;
-        }
-        .task-steps {
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding-left: 14px;
-            font-size: .8rem;
-            color: #cbd5e1;
-            list-style-type: decimal;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
-        .task-steps li {
-            margin: 2px 0;
+
+        #game-container {
+            max-width: 900px;
+            width: 100%;
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
         }
-        .task-done {
-            background: rgba(16, 185, 129, 0.1);
-            border-color: #059669;
-        }
-        .task-time {
-            background: rgba(249, 115, 22, 0.1);
-            border-color: #ea580c;
+
+        header {
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
             text-align: center;
         }
-        .task-time b {
-            font-size: 1.1rem;
-            color: #f97316;
-            margin-top: 4px;
+
+        h1 {
+            color: var(--accent-blue);
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
-        @media(max-width:900px){
-            .task-guide { grid-template-columns: 1fr 1fr; }
+
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-weight: bold;
         }
-        @media(max-width:600px){
-            .task-guide { grid-template-columns: 1fr; }
+
+        .score-val {
+            color: var(--neon-green);
+        }
+
+        .quest-box {
+            border: 1px dashed var(--border-color);
+            padding: 25px;
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .quest-title {
+            color: var(--accent-blue);
+            font-size: 1.3em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .badge-tag {
+            background: var(--accent-blue);
+            color: #000;
+            font-size: 0.7em;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        input[type="text"], textarea, select {
+            width: 100%;
+            padding: 12px;
+            background: #0d1520;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: #fff;
+            box-sizing: border-box;
+            font-size: 1em;
+            margin-top: 8px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 8px rgba(0, 210, 255, 0.3);
+        }
+
+        button {
+            background: linear-gradient(135deg, #00d2ff, #0081ff);
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .success-text {
+            color: var(--neon-green);
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .error-text {
+            color: var(--alert-red);
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Drag & Drop simulated selector styling */
+        .block-builder {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .block-row {
+            background: #0d1520;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .block-row label {
+            font-weight: bold;
+            color: var(--accent-blue);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .block-option {
+            padding: 10px;
+            background: #1c2a3d;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+        }
+
+        .block-option:hover {
+            background: #2a3e59;
+        }
+
+        .block-option.selected {
+            background: rgba(57, 255, 20, 0.2);
+            border-color: var(--neon-green);
+        }
+
+        /* Final Certificate layout */
+        .certificate-box {
+            text-align: center;
+            border: 4px double var(--neon-green);
+            padding: 40px;
+            background: #0d1520;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .cert-title {
+            font-size: 2em;
+            color: var(--neon-green);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
-<body class="energy-gradient text-slate-100 min-h-screen tech-font text-lg flex flex-col">
+<body>
 
-    <!-- Top Navigation Bar -->
-    <header class="border-b border-teal-900/40 bg-slate-950/85 backdrop-blur-md sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div class="flex items-center space-x-3">
-            <div class="bg-teal-500 text-slate-950 p-2 rounded-lg font-bold header-font glow-green">
-                ⚡ DUE10062
-            </div>
-            <div>
-                <h1 class="header-font text-xl font-bold tracking-wider text-teal-400">TECHNICAL ENQUIRY SIMULATOR</h1>
-                <p class="text-xs text-slate-400 uppercase tracking-widest">Syllabus Alignment: Unit 2 Enquiries (3.1.7 & 3.1.8)</p>
-            </div>
-        </div>
-        
-        <!-- Live Score Display -->
-        <div class="flex items-center space-x-6">
-            <div class="bg-slate-900/90 border border-slate-800 rounded-full px-4 py-2 flex items-center space-x-3">
-                <div id="nav-avatar" class="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-slate-950 text-sm">
-                    <i class="fa-solid fa-user-gear"></i>
-                </div>
-                <div>
-                    <div id="nav-username" class="text-xs text-slate-400 font-bold uppercase">TRAINEE</div>
-                    <div class="text-sm font-bold text-teal-400"><span id="live-score">0</span> XP</div>
-                </div>
-            </div>
-        </div>
-    </header>
+    <div id="game-container">
+        <header>
+            <h1>🚨 Helpdesk Terminal Client</h1>
+            <p>DUE10062: Technical English 1 — Gamified Enquiry Quest</p>
+        </header>
 
-    <!-- Horizontal Progress Map Tracker -->
-    <div class="bg-slate-950/50 border-b border-slate-900/60 px-6 py-3">
-        <div class="max-w-4xl mx-auto flex justify-between items-center relative">
-            <div class="absolute h-1 bg-slate-900 left-8 right-8 top-1/2 -translate-y-1/2 z-0"></div>
-            <div id="progress-line" class="absolute h-1 bg-teal-500 left-8 w-0 top-1/2 -translate-y-1/2 z-0 transition-all duration-500"></div>
-            
-            <!-- Checkpoints -->
-            <div class="relative z-10 flex flex-col items-center">
-                <div id="cp-1" class="w-10 h-10 rounded-full bg-teal-500 border-4 border-slate-950 text-slate-950 font-bold flex items-center justify-center transition-all duration-300">1</div>
-                <span class="text-xs mt-1 text-teal-400 font-bold uppercase tracking-wider">Signal Check</span>
+        <div class="status-bar">
+            <div>Agent Rank: <span id="agent-rank" class="score-val">Recruit</span></div>
+            <div>Score: <span id="agent-score" class="score-val">0 XP</span></div>
+        </div>
+
+        <!-- QUEST 1: Terminal Bootup -->
+        <div id="quest1" class="quest-box">
+            <div class="quest-title">
+                <span>Quest 1: The Interface Boot (Declaration Hack)</span>
+                <span class="badge-tag">100 XP</span>
             </div>
-            <div class="relative z-10 flex flex-col items-center">
-                <div id="cp-2" class="w-10 h-10 rounded-full bg-slate-900 border-4 border-slate-950 text-slate-400 font-bold flex items-center justify-center transition-all duration-300">2</div>
-                <span class="text-xs mt-1 text-slate-400 font-bold uppercase tracking-wider">Missing Info</span>
-            </div>
-            <div class="relative z-10 flex flex-col items-center">
-                <div id="cp-3" class="w-10 h-10 rounded-full bg-slate-900 border-4 border-slate-950 text-slate-400 font-bold flex items-center justify-center transition-all duration-300">3</div>
-                <span class="text-xs mt-1 text-slate-400 font-bold uppercase tracking-wider">Enquiry Rank</span>
-            </div>
-            <div class="relative z-10 flex flex-col items-center">
-                <div id="cp-4" class="w-10 h-10 rounded-full bg-slate-900 border-4 border-slate-950 text-slate-400 font-bold flex items-center justify-center transition-all duration-300">4</div>
-                <span class="text-xs mt-1 text-slate-400 font-bold uppercase tracking-wider">Circuit Connect</span>
+            <p>
+                <strong>System Glitch detected!</strong> The terminal is displaying misaligned elements due to browser layout bugs.
+                You must enter the precise, modern <strong>declarative signal</strong> that forces the web browser into
+                <strong>Standards Mode</strong> rather than an outdated, legacy format.
+                This tag acts as a simplified browser instruction, providing a <strong>clean structural foundation</strong>
+                that guarantees <strong>cross-browser consistency</strong> across all machines.
+            </p>
+            <div class="form-group">
+                <label for="q1-input"><strong>Type the required declarative tag below:</strong></label>
+                <input type="text" id="q1-input" placeholder="e.g., <!DOCTYPE ...>">
+                <button onclick="checkQuest1()">Execute Terminal Hack</button>
+                <div id="q1-feedback"></div>
             </div>
         </div>
+
+        <!-- QUEST 2: The Vocabulary Decrypter (Locked initially) -->
+        <div id="quest2" class="quest-box hidden">
+            <div class="quest-title">
+                <span>Quest 2: The Vocabulary Decrypter</span>
+                <span class="badge-tag">250 XP</span>
+            </div>
+            <p>
+                <strong>Success!</strong> Your browser is now running in Standards Mode.
+                Now, you must decrypt three informal maintenance logs from operators into precise, professional technical language.
+            </p>
+
+            <div class="block-builder">
+                <div class="block-row">
+                    <label>Log 1: "Water is squishing and squirting out of the main joint."</label>
+                    <select id="q2-opt1">
+                        <option value="">-- Select Professional Translation --</option>
+                        <option value="right">The hydraulic pump has a leaking valve.</option>
+                        <option value="wrong1">Water leak from the steel box.</option>
+                        <option value="wrong2">Dripping liquid container.</option>
+                    </select>
+                </div>
+
+                <div class="block-row">
+                    <label>Log 2: "The cutting spinner machine is broken and shaking."</label>
+                    <select id="q2-opt2">
+                        <option value="">-- Select Professional Translation --</option>
+                        <option value="wrong1">Damaged grinder.</option>
+                        <option value="right">The CNC milling machine is faulty.</option>
+                        <option value="wrong2">Shaking blades issue.</option>
+                    </select>
+                </div>
+
+                <div class="block-row">
+                    <label>Log 3: "The big heater boiler is freezing and blows cold."</label>
+                    <select id="q2-opt3">
+                        <option value="">-- Select Professional Translation --</option>
+                        <option value="wrong1">Cold heater unit.</option>
+                        <option value="wrong2">Broke radiator pipes.</option>
+                        <option value="right">The boiler system is malfunctioning.</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="checkQuest2()">Decrypt Logs</button>
+            <div id="q2-feedback"></div>
+        </div>
+
+        <!-- QUEST 3: The Polite Enquiry Builder (Locked initially) -->
+        <div id="quest3" class="quest-box hidden">
+            <div class="quest-title">
+                <span>Quest 3: Helpdesk Hero (Assemble the Enquiry)</span>
+                <span class="badge-tag">500 XP</span>
+            </div>
+            <p>
+                Your inventory is unlocked! A machinery breakdown is halting production.
+                You must send an urgent, formal enquiry to our external supplier to check replacement part availability.
+                Build a professional enquiry by selecting the best polite components:
+            </p>
+
+            <div class="block-builder">
+                <div class="block-row">
+                    <label>Step 1: Choose your Opening Greeting</label>
+                    <div class="block-option" data-step="1" data-val="unprofessional" onclick="selectBlock(this)">"Yo Suppliers,"</div>
+                    <div class="block-option" data-step="1" data-val="professional" onclick="selectBlock(this)">"Dear Customer Support Team,"</div>
+                </div>
+
+                <div class="block-row">
+                    <label>Step 2: Choose your Reason for Writing (Polite Lead-In)</label>
+                    <div class="block-option" data-step="2" data-val="unprofessional" onclick="selectBlock(this)">"I want you to send me information immediately about..."</div>
+                    <div class="block-option" data-step="2" data-val="professional" onclick="selectBlock(this)">"I am writing to enquire if your company could provide details on..."</div>
+                </div>
+
+                <div class="block-row">
+                    <label>Step 3: Choose the Technical Specifications Core</label>
+                    <div class="block-option" data-step="3" data-val="professional" onclick="selectBlock(this)">"...the availability and cost of replacement seals for our leaking hydraulic pump (Model HP-902)..."</div>
+                    <div class="block-option" data-step="3" data-val="unprofessional" onclick="selectBlock(this)">"...how to fix our broke pump machine that is leaking oil..."</div>
+                </div>
+
+                <div class="block-row">
+                    <label>Step 4: Choose your Professional Closing</label>
+                    <div class="block-option" data-step="4" data-val="professional" onclick="selectBlock(this)">"...as this has caused a critical bottleneck on our assembly line. We look forward to hearing from you."</div>
+                    <div class="block-option" data-step="4" data-val="unprofessional" onclick="selectBlock(this)">"...send them now because we have no work today."</div>
+                </div>
+            </div>
+
+            <button onclick="checkQuest3()">Compile & Send Enquiry</button>
+            <div id="q3-feedback"></div>
+        </div>
+
+        <!-- QUEST 4: Certification (Locked initially) -->
+        <div id="quest4" class="quest-box hidden">
+            <div class="certificate-box">
+                <div class="cert-title">🎖️ QUEST COMPLETED 🎖️</div>
+                <h3>Central Support System Restored</h3>
+                <p>This certifies that the player has successfully completed the Helpdesk Terminal Reboot,</p>
+                <p>decrypted technical fault logs, and compiled a polite, standards-compliant enquiry.</p>
+                <h2 style="color: var(--accent-blue); margin-top: 20px;">RANK ACHIVED: HELPDESK HERO</h2>
+                <button onclick="window.print()">Print Official Certificate</button>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Main Content Sandbox -->
-    <main class="flex-grow max-w-5xl w-full mx-auto p-6 flex flex-col justify-center">
-        
-        <!-- SCREEN 1: WELCOME & ONBOARDING -->
-        <section id="screen-welcome" class="bg-slate-900/70 border border-teal-500/20 rounded-2xl p-8 max-w-2xl mx-auto glow-green">
-            <!-- Official Task Guide 1 -->
-            <div class="task-guide">
-                <div class="task-box"><span class="label">Goal</span><b>Know today's mission and final role-play outcome.</b></div>
-                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Enter your Call Sign below.</li><li>Configure your specialist helmet avatar.</li><li>Click the initialization button.</li></ol></div>
-                <div class="task-box task-done"><span class="label">Complete when</span><b>You can explain what you will do today.</b></div>
-                <div class="task-box task-time"><span class="label">Time</span><b>5 min</b></div>
-            </div>
-
-            <div class="text-center">
-                <div class="text-6xl text-teal-400 mb-4 animate-pulse"><i class="fa-solid fa-microchip"></i></div>
-                <h2 class="header-font text-2xl font-bold tracking-wider text-slate-100 mb-2">GRID CONNECTIVITY CALIBRATION</h2>
-                <p class="text-slate-300 mb-6 text-base leading-relaxed">
-                    Welcome to the Technical English Inquiry Portal. Communication is critical. Weak or vague enquiries trigger system errors. Let's calibrate your grid communication profile to proceed.
-                </p>
-                <div class="space-y-4">
-                    <input type="text" id="username-input" placeholder="ENTER YOUR TRAINEE NAME" class="w-full bg-slate-950 border border-teal-500/30 rounded-lg py-3 px-4 text-center text-teal-400 font-bold placeholder-slate-750 focus:outline-none focus:border-teal-500 uppercase tracking-widest">
-                    <button onclick="saveOnboarding()" class="w-full bg-gradient-to-r from-teal-500 to-emerald-500 text-slate-950 font-bold py-4 rounded-lg hover:from-teal-400 hover:to-emerald-400 transition-all duration-300 shadow-lg header-font tracking-wider">LOAD INTERACTIVE MAP</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- SCREEN 2: AVATAR CUSTOMIZER -->
-        <section id="screen-avatar" class="hidden bg-slate-900/70 border border-teal-500/20 rounded-2xl p-8 max-w-3xl mx-auto w-full">
-            <h2 class="header-font text-xl font-bold text-center text-teal-400 mb-6">CONFIGURE UTILITY SPECIALIST KIT</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Preview -->
-                <div class="bg-slate-950 rounded-xl p-6 flex flex-col items-center justify-center border border-slate-800">
-                    <div id="avatar-preview-box" class="w-36 h-36 rounded-full bg-teal-500 flex items-center justify-center text-slate-950 text-5xl shadow-[0_0_20px_rgba(20,184,166,0.3)] mb-4">
-                        <i class="fa-solid fa-user-gear"></i>
-                    </div>
-                    <div id="preview-name" class="header-font font-bold text-xl tracking-wider text-teal-400">TRAINEE</div>
-                    <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">DUE10062 Tech Trainee</p>
-                </div>
-                
-                <!-- Setup -->
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-sm text-slate-400 uppercase tracking-wider mb-2">Select Field Helmet</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="changeAvatar('user-gear', '#14b8a6')" class="bg-slate-900 p-3 rounded-lg border border-teal-500/30 text-teal-400 hover:bg-slate-800 transition">⚙️ Tech</button>
-                            <button onclick="changeAvatar('user-astronaut', '#f97316')" class="bg-slate-900 p-3 rounded-lg border border-slate-800 hover:bg-slate-800 transition">☀️ Solar</button>
-                            <button onclick="changeAvatar('user-shield', '#3b82f6')" class="bg-slate-900 p-3 rounded-lg border border-slate-800 hover:bg-slate-800 transition">🛡️ Safety</button>
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm text-slate-400 uppercase tracking-wider mb-2">Visor Interface Glow</label>
-                        <div class="flex space-x-3">
-                            <button onclick="updateColor('#14b8a6')" class="w-8 h-8 rounded-full bg-teal-500 border border-white"></button>
-                            <button onclick="updateColor('#f97316')" class="w-8 h-8 rounded-full bg-orange-500 border border-transparent"></button>
-                            <button onclick="updateColor('#3b82f6')" class="w-8 h-8 rounded-full bg-blue-500 border border-transparent"></button>
-                        </div>
-                    </div>
-                    <button onclick="startActivity1()" class="w-full bg-teal-500 text-slate-950 font-bold py-3 rounded-lg hover:bg-teal-400 transition-all shadow-md header-font">INITIALIZE CALIBRATION ➡️</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- SCREEN 3: ACTIVITY 1 - MESSAGE SIGNAL CHECK -->
-        <section id="screen-act1" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-2xl mx-auto w-full">
-            <!-- Official Task Guide 2 -->
-            <div class="task-guide">
-                <div class="task-box"><span class="label">Goal</span><b>Identify polite language and analyze clarity constraints.</b></div>
-                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Read the incoming transmission box.</li><li>Evaluate grammar vs. detail completeness.</li><li>Pick the missing clarity fix.</li></ol></div>
-                <div class="task-box task-done"><span class="label">Complete when</span><b>Antenna signal is perfectly calibrated (100%).</b></div>
-                <div class="task-box task-time"><span class="label">Time</span><b>10 min</b></div>
-            </div>
-
-            <div class="flex justify-between items-center mb-6 border-t border-slate-800/80 pt-4">
-                <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Activity 1: Message Signal Check</span>
-                <span class="text-xs text-slate-400">Power: <span id="antenna-status" class="text-orange-400 font-bold">CALIBRATING</span></span>
-            </div>
-            
-            <h2 class="header-font text-xl font-bold mb-2">📶 CLASSIFY THE COMMUNICATION SIGNAL</h2>
-            <p class="text-slate-300 text-sm mb-6">
-                <strong>Situation:</strong> A technician needs the latest transformer inspection report. <br>
-                Review the incoming message box below and evaluate its communication quality.
-            </p>
-            
-            <div class="bg-slate-950 rounded-xl p-5 border border-slate-800 mb-6 text-center">
-                <div class="text-[10px] text-slate-500 uppercase tracking-widest mb-1">Incoming Communication Signal</div>
-                <div class="text-lg font-bold text-slate-200 italic">"Could you send me the report when possible?"</div>
-            </div>
-
-            <!-- Task Phase A: Categorization -->
-            <div id="act1-phaseA" class="space-y-3">
-                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Classify Communication Quality:</div>
-                <div class="grid grid-cols-1 gap-2">
-                    <button onclick="checkAct1A(1)" class="w-full text-left bg-slate-900 hover:bg-slate-800 border border-slate-800 p-4 rounded-xl transition">
-                        <span class="text-teal-400 font-bold">A. Professional and suitable</span>
-                        <p class="text-xs text-slate-400 mt-1">The enquiry is polite, fully detailed, and ready for official grid processing.</p>
-                    </button>
-                    <button onclick="checkAct1A(2)" class="w-full text-left bg-slate-900 hover:bg-slate-800 border border-slate-800 p-4 rounded-xl transition">
-                        <span class="text-amber-400 font-bold">B. Polite but unclear</span>
-                        <p class="text-xs text-slate-400 mt-1">The phrasing is polite, but it lacks specific details regarding which report is needed and the target deadline.</p>
-                    </button>
-                    <button onclick="checkAct1A(3)" class="w-full text-left bg-slate-900 hover:bg-slate-800 border border-slate-800 p-4 rounded-xl transition">
-                        <span class="text-red-400 font-bold">C. Clear but too direct</span>
-                        <p class="text-xs text-slate-400 mt-1">The core demand is clear, but the tone is too casual or demanding for a professional context.</p>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Task Phase B: Follow-up decision -->
-            <div id="act1-phaseB" class="hidden space-y-4">
-                <div class="p-3 bg-teal-950/30 border border-teal-500/30 rounded-lg text-sm text-teal-300">
-                    <strong>Excellent analysis!</strong> Indeed, the phrase "the report" and "when possible" are vague. To fix this signal static, we must inject clarity.
-                </div>
-                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Which critical detail must be added first?</div>
-                <div class="grid grid-cols-1 gap-2">
-                    <button onclick="checkAct1B(1)" class="w-full text-left bg-slate-900 hover:border-teal-500/50 p-3 rounded-lg border border-slate-800 text-xs text-slate-200">
-                        A. Introduce a longer, more elaborate greeting at the start.
-                    </button>
-                    <button onclick="checkAct1B(2)" class="w-full text-left bg-slate-900 hover:border-teal-500/50 p-3 rounded-lg border border-slate-800 text-xs text-slate-200">
-                        B. Specify the exact report name (e.g., 'Transformer 4 Inspection') and an explicit submission deadline.
-                    </button>
-                    <button onclick="checkAct1B(3)" class="w-full text-left bg-slate-900 hover:border-teal-500/50 p-3 rounded-lg border border-slate-800 text-xs text-slate-200">
-                        C. List the technician's preferred communication platform or contact history.
-                    </button>
-                </div>
-            </div>
-
-            <!-- Feedback Toast -->
-            <div id="act1-toast" class="hidden mt-4 p-3 bg-red-950/40 border border-red-500/40 rounded-lg text-sm text-red-400">
-                Static detected! That analysis is incorrect. Read the communication fragment again carefully.
-            </div>
-        </section>
-
-        <!-- SCREEN 4: ACTIVITY 2 - MISSING INFORMATION DETECTOR -->
-        <section id="screen-act2" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-3xl mx-auto w-full">
-            <!-- Official Task Guide 3 -->
-            <div class="task-guide">
-                <div class="task-box"><span class="label">Goal</span><b>Audit technical notices and match enquiries to missing details.</b></div>
-                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Read the flyer. Identify exactly 3 missing items.</li><li>Match each missing parameter with a precise, professional inquiry.</li></ol></div>
-                <div class="task-box task-done"><span class="label">Complete when</span><b>The 3 missing elements are matched with 100% precision.</b></div>
-                <div class="task-box task-time"><span class="label">Time</span><b>15 min</b></div>
-            </div>
-
-            <div class="flex justify-between items-center mb-6 border-t border-slate-800/80 pt-4">
-                <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Activity 2: Missing Info Detector</span>
-                <span class="text-xs text-slate-400">Status: <span class="text-teal-400 font-bold">Auditing Document...</span></span>
-            </div>
-            
-            <h2 class="header-font text-xl font-bold mb-2">🔍 DETECT MISSING INFORMATION FROM BULLETIN</h2>
-            <p class="text-slate-300 text-sm mb-4">
-                <strong>Task:</strong> Read the technical advertisement below. Click to identify exactly <strong>three vital pieces of information</strong> missing from this service flyer.
-            </p>
-
-            <!-- Advertisement Box -->
-            <div class="bg-gradient-to-r from-slate-950 to-slate-900 border border-slate-800 p-5 rounded-xl mb-4 relative">
-                <span class="absolute top-2 right-2 text-[10px] bg-amber-500/10 text-amber-500 font-mono px-2 py-0.5 rounded uppercase">Incomplete Notice</span>
-                <h3 class="font-bold text-amber-400 border-b border-slate-800 pb-1 text-base uppercase tracking-wider">⚡ Solar Panel Maintenance Service</h3>
-                <p class="text-xs text-slate-300 mt-2 leading-relaxed">
-                    Preventive inspections and comprehensive system cleaning are now active for high-voltage installations. Ensure system efficiency and protect equipment. Contact our service team for further information.
-                </p>
-            </div>
-
-            <!-- Option Checklist -->
-            <div id="act2-detectors" class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-6">
-                <button onclick="toggleAct2Badge('fee', true)" id="badge-fee" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">💰 Service Fee (Cost)</button>
-                <button onclick="toggleAct2Badge('area', true)" id="badge-area" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">📍 Service Coverage Area</button>
-                <button onclick="toggleAct2Badge('avail', true)" id="badge-avail" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">📅 Appointment Availability</button>
-                <button onclick="toggleAct2Badge('slogan', false)" id="badge-slogan" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">📢 Company Slogan</button>
-                <button onclick="toggleAct2Badge('age', false)" id="badge-age" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">👴 Technician's Age</button>
-                <button onclick="toggleAct2Badge('color', false)" id="badge-color" class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition">🎨 Office Wall Colour</button>
-            </div>
-
-            <!-- Match Part -->
-            <div id="act2-match-area" class="hidden border-t border-slate-800 pt-4 space-y-4">
-                <div class="p-3 bg-teal-950/30 border border-teal-500/30 rounded-lg text-sm text-teal-300">
-                    <strong>Auditing Complete!</strong> You have found the missing details. Now, select the most **precise, professional and polite enquiry** to ask about <strong>Appointment Availability</strong>:
-                </div>
-                
-                <div class="grid grid-cols-1 gap-2">
-                    <button onclick="checkAct2Match(1)" class="w-full text-left bg-slate-900 hover:bg-slate-850 p-3 rounded-lg border border-slate-800 text-xs">
-                        A. "When can you come? I need it quickly."
-                        <p class="text-[10px] text-slate-500 mt-1">Direct request. Extremely immediate but unpolished.</p>
-                    </button>
-                    <button onclick="checkAct2Match(2)" class="w-full text-left bg-slate-900 hover:bg-slate-850 p-3 rounded-lg border border-slate-800 text-xs">
-                        B. "Could you confirm whether an appointment is available next Monday morning?"
-                        <p class="text-[10px] text-slate-500 mt-1">Polite starter paired with specific, actionable day and time parameters.</p>
-                    </button>
-                    <button onclick="checkAct2Match(3)" class="w-full text-left bg-slate-900 hover:bg-slate-850 p-3 rounded-lg border border-slate-800 text-xs">
-                        C. "Could you explain when your service is usually available?"
-                        <p class="text-[10px] text-slate-500 mt-1">Polite but vague. Does not offer a specific target window to coordinate scheduling.</p>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Error Notification -->
-            <div id="act2-error" class="hidden mt-4 p-3 bg-red-950/40 border border-red-500/40 rounded-lg text-xs text-red-400">
-                Mismatch or incorrect parameter selection. Review the options and try again.
-            </div>
-            
-            <!-- Helpful Tooltip overlay for mistake recovery -->
-            <div id="language-tip-box" class="hidden mt-6 p-4 bg-slate-950/80 border-l-4 border-orange-500 rounded-lg text-sm text-slate-300">
-                <div class="font-bold text-orange-400 uppercase text-xs mb-1">💡 Language Coaching Hint</div>
-                <p id="language-tip-text">Tip text...</p>
-            </div>
-        </section>
-
-        <!-- SCREEN 5: ACTIVITY 3 - ENQUIRY QUALITY RANKING -->
-        <section id="screen-act3" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-3xl mx-auto w-full">
-            <!-- Official Task Guide 4 -->
-            <div class="task-guide">
-                <div class="task-box"><span class="label">Goal</span><b>Evaluate, compare, and rank the effectiveness of enquiries.</b></div>
-                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Rank options A, B, and C (1 = Best, 3 = Weakest).</li><li>Identify the technical criteria behind the top ranking.</li></ol></div>
-                <div class="task-box task-done"><span class="label">Complete when</span><b>Ranking order and the evaluation justification are fully aligned.</b></div>
-                <div class="task-box task-time"><span class="label">Time</span><b>15 min</b></div>
-            </div>
-
-            <div class="flex justify-between items-center mb-6 border-t border-slate-800/80 pt-4">
-                <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Activity 3: Enquiry Quality Ranking</span>
-                <span class="text-xs text-slate-400">Parameter: <span class="text-teal-400 font-bold">Evaluating Priority</span></span>
-            </div>
-            
-            <h2 class="header-font text-xl font-bold mb-2">⚖️ ARRANGE ENQUIRIES BY EFFECTIVENESS</h2>
-            <p class="text-slate-300 text-sm mb-6">
-                <strong>Situation:</strong> You need to request the latest high-voltage safety procedures document. <br>
-                Rank the three acceptable enquiries below from <strong>Most Effective (Rank 1)</strong> to <strong>Least Effective (Rank 3)</strong>.
-            </p>
-
-            <!-- Cards to Rank -->
-            <div class="space-y-4">
-                <!-- Card A -->
-                <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
-                    <div class="text-xs">
-                        <strong class="text-slate-400">Option A:</strong> "Could you please send me the safety procedure?"
-                    </div>
-                    <select id="rank-A" class="bg-slate-900 border border-slate-700 text-teal-400 text-xs rounded p-1">
-                        <option value="">Choose Rank...</option>
-                        <option value="1">Rank 1 (Best)</option>
-                        <option value="2">Rank 2</option>
-                        <option value="3">Rank 3 (Weakest)</option>
-                    </select>
-                </div>
-                
-                <!-- Card B -->
-                <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
-                    <div class="text-xs">
-                        <strong class="text-slate-400">Option B:</strong> "Could you please provide the latest high-voltage safety procedure before Friday’s inspection?"
-                    </div>
-                    <select id="rank-B" class="bg-slate-900 border border-slate-700 text-teal-400 text-xs rounded p-1">
-                        <option value="">Choose Rank...</option>
-                        <option value="1">Rank 1 (Best)</option>
-                        <option value="2">Rank 2</option>
-                        <option value="3">Rank 3 (Weakest)</option>
-                    </select>
-                </div>
-
-                <!-- Card C -->
-                <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl flex items-center justify-between">
-                    <div class="text-xs">
-                        <strong class="text-slate-400">Option C:</strong> "I would appreciate it if you could provide the document related to safety."
-                    </div>
-                    <select id="rank-C" class="bg-slate-900 border border-slate-700 text-teal-400 text-xs rounded p-1">
-                        <option value="">Choose Rank...</option>
-                        <option value="1">Rank 1 (Best)</option>
-                        <option value="2">Rank 2</option>
-                        <option value="3">Rank 3 (Weakest)</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Verification Button -->
-            <button onclick="verifyAct3Ranking()" class="w-full mt-6 bg-slate-850 border border-slate-700 text-slate-200 py-3 rounded-lg hover:border-teal-500 hover:text-teal-400 text-xs uppercase tracking-wider font-bold transition">Verify Ranking Sequence</button>
-
-            <!-- Reason Section -->
-            <div id="act3-reason-area" class="hidden border-t border-slate-800 mt-6 pt-4 space-y-4">
-                <div class="p-3 bg-teal-950/30 border border-teal-500/30 rounded-lg text-sm text-teal-300">
-                    <strong>Perfect Sequence!</strong> Option B is Rank 1, Option A is Rank 2, and Option C is Rank 3.
-                </div>
-                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">What is the primary reason Option B is evaluated as the most effective?</div>
-                <div class="grid grid-cols-1 gap-2">
-                    <button onclick="checkAct3Reason(1)" class="w-full text-left bg-slate-900 hover:bg-slate-850 p-3 border border-slate-800 rounded-lg text-xs">
-                        A. It features the most complex and formal grammar vocabulary.
-                    </button>
-                    <button onclick="checkAct3Reason(2)" class="w-full text-left bg-slate-900 hover:bg-slate-850 p-3 border border-slate-800 rounded-lg text-xs">
-                        B. It states a specific document purpose and details a clear time deadline.
-                    </button>
-                    <button onclick="checkAct3Reason(3)" class="w-full text-left bg-slate-900 hover:bg-slate-850 p-3 border border-slate-800 rounded-lg text-xs">
-                        C. It is the longest sentence structure among the three alternatives.
-                    </button>
-                </div>
-            </div>
-
-            <!-- Failure Toast -->
-            <div id="act3-error" class="hidden mt-4 p-3 bg-red-950/40 border border-red-500/40 rounded-lg text-xs text-red-400">
-                Sequence discrepancy detected. Review the rankings and try again.
-            </div>
-        </section>
-
-        <!-- SCREEN 6: ACTIVITY 4 - BUILD THE COMMUNICATION CHAIN -->
-        <section id="screen-act4" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-4xl mx-auto w-full">
-            <!-- Official Task Guide 5 -->
-            <div class="task-guide">
-                <div class="task-box"><span class="label">Goal</span><b>Sequence dialogue chronologically and label functional circuit steps.</b></div>
-                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li><b>Task A:</b> delete the irrelevant sentence.</li><li><b>Task B:</b> place blocks 1 to 6 in order.</li><li><b>Task C:</b> label each block with its function.</li></ol></div>
-                <div class="task-box task-done"><span class="label">Complete when</span><b>Order and labels match the Communication Circuit perfectly.</b></div>
-                <div class="task-box task-time"><span class="label">Time</span><b>30 min</b></div>
-            </div>
-
-            <div class="flex justify-between items-center mb-4 border-t border-slate-800/80 pt-4">
-                <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Activity 4: Circuit Connection</span>
-                <button onclick="toggleAct4Hint()" class="bg-slate-800 hover:bg-slate-700 text-teal-400 px-3 py-1 rounded text-xs uppercase font-bold tracking-wider"><i class="fa-solid fa-lightbulb mr-1"></i> Hint Pathway</button>
-            </div>
-            
-            <h2 class="header-font text-xl font-bold mb-1">🔌 ARRANGE THE ENQUIRY IN THE CORRECT ORDER</h2>
-            <p class="text-slate-400 text-xs mb-6">
-                <strong>Mission:</strong> Reconnect the Communication Circuit (Syllabus Target 3.1.7). <br>
-                Complete Tasks A, B, and C in order to synchronize the network lines.
-            </p>
-
-            <!-- Hint Diagram Modal Panel -->
-            <div id="act4-hint-panel" class="hidden bg-teal-950/20 border border-teal-500/30 p-4 rounded-xl mb-4 text-xs text-slate-300 space-y-2">
-                <div class="font-bold text-teal-400 uppercase tracking-widest flex items-center justify-between">
-                    <span>Target Circuit Flow Pattern</span>
-                    <button onclick="toggleAct4Hint()"><i class="fa-solid fa-circle-xmark text-sm"></i></button>
-                </div>
-                <div class="grid grid-cols-6 gap-1 text-center font-bold">
-                    <div class="bg-slate-900 p-1.5 rounded border border-slate-800">1. GREET</div>
-                    <div class="bg-slate-900 p-1.5 rounded border border-slate-800">2. PURPOSE</div>
-                    <div class="bg-slate-900 p-1.5 rounded border border-slate-800">3. ASK</div>
-                    <div class="bg-slate-900 p-1.5 rounded border border-slate-800">4. RESPOND</div>
-                    <div class="bg-slate-900 p-1.5 rounded border border-slate-800">5. CLARIFY</div>
-                    <div class="bg-slate-900 p-1.5 rounded border border-slate-800">6. CLOSE</div>
-                </div>
-            </div>
-
-            <!-- Task Phase A: Irrelevant Block Removal -->
-            <div id="act4-taskA" class="space-y-3">
-                <div class="text-xs font-bold text-amber-400 uppercase tracking-wider">Task A: Click to delete the irrelevant/distracting sentence:</div>
-                <div id="act4-filter-box" class="space-y-2">
-                    <!-- Sentences loaded here -->
-                </div>
-            </div>
-
-            <!-- Task Phase B & C: Arrange and Label -->
-            <div id="act4-taskB" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <!-- Drop Slots -->
-                <div class="space-y-2">
-                    <div class="text-xs font-bold text-teal-400 uppercase tracking-wider">Your Active Circuit Assembly</div>
-                    <div id="assembly-slots" class="space-y-2">
-                        <!-- Slots populated dynamically -->
-                    </div>
-                </div>
-                
-                <!-- Unplaced Elements -->
-                <div class="space-y-2">
-                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Unplaced Signal Blocks (Click to mount)</div>
-                    <div id="assembly-pool" class="space-y-2">
-                        <!-- Pool dynamically loaded -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Bottom Control Frame -->
-            <div class="mt-8 p-4 bg-slate-950/80 border border-slate-800 rounded-xl flex justify-between items-center">
-                <button onclick="resetAct4()" class="text-xs text-slate-500 uppercase hover:text-slate-300">Reset Pipeline</button>
-                <div id="act4-feedback" class="text-xs text-slate-400">Complete Task A first to start assembly...</div>
-                <button onclick="verifyAct4Layout()" id="btn-act4-verify" class="hidden bg-teal-500 text-slate-950 font-bold px-6 py-2 rounded-lg hover:bg-teal-400 transition header-font text-xs uppercase tracking-wider">Verify Assembly</button>
-                <button onclick="goToAudit()" id="btn-act4-next" class="hidden bg-teal-500 text-slate-950 font-bold px-6 py-2 rounded-lg hover:bg-teal-400 transition header-font text-xs uppercase tracking-wider">Load Final Audit ➡️</button>
-            </div>
-        </section>
-
-        <!-- SCREEN 7: FINAL PERFORMANCE AUDIT (Inbox Challenge) -->
-        <section id="screen-audit" class="hidden bg-slate-900/70 border border-slate-800 rounded-2xl p-8 max-w-2xl mx-auto w-full">
-            <!-- Official Task Guide 6 -->
-            <div class="task-guide">
-                <div class="task-box"><span class="label">Goal</span><b>Perform complete enquiry review & analyze response relevance.</b></div>
-                <div class="task-box"><span class="label">Do this</span><ol class="task-steps"><li>Compare the customer enquiry with the supplier's response.</li><li>Detect and highlight the missing unanswered questions.</li></ol></div>
-                <div class="task-box task-done"><span class="label">Complete when</span><b>The final system audit is successfully cleared.</b></div>
-                <div class="task-box task-time"><span class="label">Time</span><b>23 min</b></div>
-            </div>
-
-            <div class="flex justify-between items-center mb-6 border-t border-slate-800/80 pt-4">
-                <span class="bg-slate-950 border border-slate-800 text-teal-400 px-3 py-1 rounded text-xs uppercase tracking-widest font-bold">Final Audit</span>
-                <span class="text-xs text-slate-400">Challenge: <strong id="audit-step-label">Inbox Audit</strong></span>
-            </div>
-            
-            <h2 class="header-font text-xl font-bold mb-4">🏆 FINAL PERFORMANCE AUDIT: INBOX CHALLENGE</h2>
-            
-            <div class="bg-slate-950 p-5 rounded-xl border border-slate-800 mb-6 text-xs text-slate-300 space-y-3">
-                <div class="font-bold text-amber-500 border-b border-slate-800 pb-1">AUDIT BRIEF</div>
-                <p>
-                    <strong>Supplier Response Received:</strong> "The calibration process takes three working days. Collection is available within Port Dickson."
-                </p>
-                <p class="border-t border-slate-900 pt-2">
-                    <strong>Original Customer Inquiry:</strong> "Could you confirm the calibration fee, completion time and whether collection is available?"
-                </p>
-            </div>
-
-            <!-- Task Phase -->
-            <div id="audit-options-container" class="space-y-4">
-                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Identify the unanswered question left out by the supplier:</div>
-                <div class="grid grid-cols-1 gap-2">
-                    <button onclick="evaluateAuditChoice(1)" class="w-full text-left bg-slate-900 hover:bg-slate-850 p-4 rounded-xl border border-slate-800 text-xs">
-                        A. Collection availability
-                    </button>
-                    <button onclick="evaluateAuditChoice(2)" class="w-full text-left bg-slate-900 hover:bg-slate-850 p-4 rounded-xl border border-slate-800 text-xs">
-                        B. Estimated completion time
-                    </button>
-                    <button onclick="evaluateAuditChoice(3)" class="w-full text-left bg-slate-900 hover:bg-slate-850 p-4 rounded-xl border border-slate-800 text-xs">
-                        C. The Calibration fee
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- SCREEN 8: CERTIFICATION & EVALUATION TABLE -->
-        <section id="screen-cert" class="hidden bg-slate-900/80 border-2 border-teal-500 rounded-2xl p-8 text-center max-w-2xl mx-auto glow-green relative overflow-hidden">
-            <!-- Background effects -->
-            <div class="absolute -top-10 -left-10 text-teal-500/10 text-8xl transform -rotate-12"><i class="fa-solid fa-shield-halved"></i></div>
-            <div class="absolute -bottom-10 -right-10 text-emerald-500/10 text-8xl transform rotate-12"><i class="fa-solid fa-trophy"></i></div>
-
-            <div class="text-6xl text-emerald-400 mb-4"><i class="fa-solid fa-circle-check"></i></div>
-            <h2 class="header-font text-2xl font-bold tracking-widest text-emerald-400 mb-1">TRAINING PROFILE VERIFIED</h2>
-            <p class="text-slate-400 text-xs uppercase tracking-widest mb-6">Politeknik & Kolej Komuniti Course Framework</p>
-            
-            <!-- Audit Criteria Evaluation Table -->
-            <div class="border border-slate-800 bg-slate-950 p-5 rounded-xl mb-6 relative text-left">
-                <div class="text-xs text-teal-400/80 tracking-widest uppercase mb-4 text-center font-bold">Performance Criteria Audit Report</div>
-                <table class="w-full text-xs text-slate-300">
-                    <thead>
-                        <tr class="border-b border-slate-800 text-slate-400 font-bold uppercase">
-                            <th class="pb-2 text-left">Criterion Target</th>
-                            <th class="pb-2 text-right">Evaluation Status</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-900">
-                        <tr>
-                            <td class="py-2 flex items-center"><i class="fa-solid fa-bullseye text-teal-500 mr-2"></i> Clear Purpose Identification</td>
-                            <td class="py-2 text-right text-emerald-400 font-bold">Achieved</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 flex items-center"><i class="fa-solid fa-sitemap text-teal-500 mr-2"></i> Logical Enquiry Organisation</td>
-                            <td class="py-2 text-right text-emerald-400 font-bold">Achieved</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 flex items-center"><i class="fa-solid fa-circle-question text-teal-500 mr-2"></i> Relevant Detail Specificity</td>
-                            <td class="py-2 text-right text-emerald-400 font-bold">Achieved</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 flex items-center"><i class="fa-solid fa-face-smile-beam text-teal-500 mr-2"></i> Polite Starter Formulas</td>
-                            <td class="py-2 text-right text-emerald-400 font-bold">Achieved</td>
-                        </tr>
-                        <tr>
-                            <td class="py-2 flex items-center"><i class="fa-solid fa-link text-teal-500 mr-2"></i> Connectors & Cohesive Devices</td>
-                            <td class="py-2 text-right text-emerald-400 font-bold">Achieved</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Certificate Frame -->
-            <div class="border border-slate-800 bg-slate-950 p-6 rounded-xl mb-6 relative">
-                <div class="text-xs text-teal-500/80 tracking-widest uppercase mb-2 font-mono">DUE10062 Technical English (Unit 2 Enquiries)</div>
-                <h3 class="header-font text-xl font-bold text-slate-100 uppercase tracking-widest" id="cert-name">AGENT</h3>
-                <p class="text-xs text-slate-400 mt-2">
-                    has successfully cleared all calibration checks matching the updated instructional suggestions.
-                </p>
-                <div class="mt-4 flex justify-around items-center border-t border-slate-900 pt-4">
-                    <div>
-                        <div class="text-[10px] text-slate-500">Validation Score</div>
-                        <div class="text-lg font-bold text-teal-400" id="cert-score">0 XP</div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] text-slate-500">Verification ID</div>
-                        <div class="text-xs font-mono text-teal-400" id="cert-id">DUE-2026-OK</div>
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="resetSimulator()" class="bg-slate-800 hover:bg-slate-700 text-slate-100 font-bold px-6 py-2 rounded-lg transition text-sm header-font uppercase tracking-wider">Restart Calibration Simulator</button>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-slate-900 bg-slate-950/80 px-6 py-4 text-center text-xs text-slate-500 uppercase tracking-widest">
-        Politeknik Malaysia &copy; 2026. Custom Instructional Design Module.
-    </footer>
-
-    <!-- INTERACTIVE SIMULATOR ENGINE (JS) -->
     <script>
-        // Game State Engine
-        let player = {
-            name: "Trainee",
-            avatar: "user-gear",
-            color: "#14b8a6",
-            score: 0,
-            screen: "screen-welcome",
-            act2Selection: [],
-            act4Order: [],
-            act4Labels: {}
-        };
+        let score = 0;
+        let selectedBlocks = {1: null, 2: null, 3: null, 4: null};
 
-        const sentencesAct4Raw = [
-            { id: "s1", correctStep: 1, text: "Good morning, Grid Operations Team.", label: "GREET", type: "valid" },
-            { id: "s2", correctStep: 2, text: "I am writing regarding the voltage fluctuation recorded yesterday.", label: "PURPOSE", type: "valid" },
-            { id: "s3", correctStep: 3, text: "Could you confirm whether the transformer inspection has been completed?", label: "ASK", type: "valid" },
-            { id: "s4", correctStep: 4, text: "The inspection was completed at 3.00 pm, and no fault was detected.", label: "RESPOND", type: "valid" },
-            { id: "s5", correctStep: 5, text: "Could you also clarify when the official report will be available?", label: "CLARIFY", type: "valid" },
-            { id: "s6", correctStep: 99, text: "The weather was quite warm during the inspection.", label: "NONE", type: "irrelevant" },
-            { id: "s7", correctStep: 6, text: "Thank you for your assistance. I look forward to your response.", label: "CLOSE", type: "valid" }
-        ];
+        // Synthesize retro bleep sound effects via Web Audio API (No files needed!)
+        function playTone(freq, type, duration) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
 
-        // NAVIGATION CONTROL
-        function showScreen(screenId) {
-            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(screenId).classList.remove('hidden');
-            player.screen = screenId;
-            updateProgressMap(screenId);
-        }
+                oscillator.type = type;
+                oscillator.frequency.value = freq;
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
 
-        function updateProgressMap(screenId) {
-            const steps = ["screen-act1", "screen-act2", "screen-act3", "screen-act4", "screen-audit", "screen-cert"];
-            const currentIdx = steps.indexOf(screenId);
-            const progressPct = currentIdx >= 0 ? (currentIdx / 4) * 100 : 0;
-            
-            document.getElementById("progress-line").style.width = `${progressPct}%`;
-            
-            for (let i = 1; i <= 4; i++) {
-                const cp = document.getElementById(`cp-${i}`);
-                if (i <= currentIdx + 1) {
-                    cp.className = "w-10 h-10 rounded-full bg-teal-500 border-4 border-slate-950 text-slate-950 font-bold flex items-center justify-center transition-all duration-300 shadow-[0_0_10px_rgba(20,184,166,0.5)]";
-                } else {
-                    cp.className = "w-10 h-10 rounded-full bg-slate-900 border-4 border-slate-950 text-slate-400 font-bold flex items-center justify-center transition-all duration-300";
-                }
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + duration);
+            } catch(e) {
+                console.log("AudioContext not supported or blocked by browser.");
             }
         }
 
-        // ONBOARDING HANDLERS
-        function saveOnboarding() {
-            const val = document.getElementById("username-input").value.trim();
-            if (val) {
-                player.name = val.toUpperCase();
-                document.getElementById("nav-username").innerText = player.name;
-                document.getElementById("preview-name").innerText = player.name;
-                document.getElementById("cert-name").innerText = player.name;
-                showScreen("screen-avatar");
-            } else {
-                alert("PLEASE ENTER YOUR TRAINEE ID CALL SIGN!");
+        function updateScore(amount, rank) {
+            score += amount;
+            document.getElementById('agent-score').innerText = score + " XP";
+            if (rank) {
+                document.getElementById('agent-rank').innerText = rank;
             }
         }
 
-        function changeAvatar(gear, color) {
-            player.avatar = gear;
-            player.color = color;
-            document.getElementById("avatar-preview-box").innerHTML = `<i class="fa-solid fa-${gear}"></i>`;
-            document.getElementById("avatar-preview-box").style.backgroundColor = color;
-            document.getElementById("nav-avatar").innerHTML = `<i class="fa-solid fa-${gear}"></i>`;
-            document.getElementById("nav-avatar").style.backgroundColor = color;
-        }
+        function checkQuest1() {
+            const input = document.getElementById('q1-input').value.trim().toLowerCase();
+            const feedback = document.getElementById('q1-feedback');
 
-        function updateColor(color) {
-            player.color = color;
-            document.getElementById("avatar-preview-box").style.backgroundColor = color;
-            document.getElementById("nav-avatar").style.backgroundColor = color;
-        }
-
-        function startActivity1() {
-            showScreen("screen-act1");
-        }
-
-        // ACTIVITY 1: MESSAGE SIGNAL CHECK
-        function checkAct1A(choice) {
-            const toast = document.getElementById("act1-toast");
-            if (choice === 2) {
-                player.score += 100;
-                document.getElementById("live-score").innerText = player.score;
-                toast.classList.add("hidden");
-                
-                // Transition Phase A -> B
-                document.getElementById("act1-phaseA").classList.add("hidden");
-                document.getElementById("act1-phaseB").classList.remove("hidden");
+            // Standard check for modern html5 declaration
+            if (input === '<!doctype html>' || input === '<!doctype html>') {
+                playTone(523.25, 'sine', 0.15); // C5 note
+                setTimeout(() => playTone(659.25, 'sine', 0.15), 100); // E5 note
+                feedback.innerHTML = '<p class="success-text">✔ TERMINAL ONLINE! Browser forced into Standards Mode. Layout glitches resolved.</p>';
+                updateScore(100, "Support Agent");
+                document.getElementById('quest2').classList.remove('hidden');
+                document.getElementById('q1-input').disabled = true;
             } else {
-                toast.innerText = "⚠️ SYSTEM STATIC: That analysis is incorrect. Read the text again.";
-                toast.classList.remove("hidden");
-                toast.classList.add("shake");
-                setTimeout(() => toast.classList.remove("shake"), 500);
+                playTone(150, 'sawtooth', 0.3); // Error buzz
+                feedback.innerHTML = '<p class="error-text">❌ ERROR: Invalid system header. Terminal is stuck in legacy Quirks Mode.</p>';
             }
         }
 
-        function checkAct1B(choice) {
-            const toast = document.getElementById("act1-toast");
-            if (choice === 2) {
-                player.score += 100;
-                document.getElementById("live-score").innerText = player.score;
-                toast.classList.add("hidden");
-                
-                document.getElementById("antenna-status").innerText = "CALIBRATION OK!";
-                document.getElementById("antenna-status").className = "text-teal-400 font-bold animate-bounce";
-                
-                alert("🛰️ SIGNAL UNLOCKED: Calibration success. Accessing missing detail audits.");
-                setTimeout(() => {
-                    showScreen("screen-act2");
-                }, 1000);
+        function checkQuest2() {
+            const opt1 = document.getElementById('q2-opt1').value;
+            const opt2 = document.getElementById('q2-opt2').value;
+            const opt3 = document.getElementById('q2-opt3').value;
+            const feedback = document.getElementById('q2-feedback');
+
+            if (opt1 === 'right' && opt2 === 'right' && opt3 === 'right') {
+                playTone(587.33, 'sine', 0.1); // D5 note
+                playTone(698.46, 'sine', 0.2); // F5 note
+                feedback.innerHTML = '<p class="success-text">✔ DECRYPTION SUCCESSFUL! Precise technical terms uploaded to central database.</p>';
+                updateScore(250, "Senior Specialist");
+                document.getElementById('quest3').classList.remove('hidden');
+                document.getElementById('q2-opt1').disabled = true;
+                document.getElementById('q2-opt2').disabled = true;
+                document.getElementById('q2-opt3').disabled = true;
             } else {
-                toast.innerText = "⚠️ PARAMETER FAILURE: Adding that detail will not specify which report or time frame is needed.";
-                toast.classList.remove("hidden");
-                toast.classList.add("shake");
-                setTimeout(() => toast.classList.remove("shake"), 500);
+                playTone(150, 'sawtooth', 0.3); // Error buzz
+                feedback.innerHTML = '<p class="error-text">❌ DECRYPTION FAILED. Some logs contain inaccurate or informal vocabulary.</p>';
             }
         }
 
-        // ACTIVITY 2: MISSING INFO DETECTOR
-        function toggleAct2Badge(id, isCorrect) {
-            const badge = document.getElementById(`badge-${id}`);
-            const error = document.getElementById("act2-error");
+        function selectBlock(element) {
+            const step = element.getAttribute('data-step');
 
-            if (player.act2Selection.includes(id)) {
-                // Deselect
-                player.act2Selection = player.act2Selection.filter(x => x !== id);
-                badge.classList.remove("border-teal-500", "bg-teal-950/20", "text-teal-400");
-                badge.classList.add("border-slate-800", "bg-slate-900", "text-slate-400");
-            } else {
-                // Select
-                if (player.act2Selection.length >= 3) {
-                    alert("A maximum of three parameters are allowed.");
+            // Clear previous selections in this step
+            const stepOptions = document.querySelectorAll(`.block-option[data-step="${step}"]`);
+            stepOptions.forEach(opt => opt.classList.remove('selected'));
+
+            // Select clicked
+            element.classList.add('selected');
+            selectedBlocks[step] = element.getAttribute('data-val');
+            playTone(800, 'triangle', 0.05);
+        }
+
+        function checkQuest3() {
+            const feedback = document.getElementById('q3-feedback');
+
+            // Validate all blocks are selected
+            for (let step in selectedBlocks) {
+                if (selectedBlocks[step] === null) {
+                    playTone(150, 'sawtooth', 0.3);
+                    feedback.innerHTML = '<p class="error-text">❌ INCOMPLETE. Please select a choice for all 4 parts of the enquiry.</p>';
                     return;
                 }
-                
-                player.act2Selection.push(id);
-                badge.classList.remove("border-slate-800", "bg-slate-900", "text-slate-400");
-                
-                if (isCorrect) {
-                    badge.classList.add("border-teal-500", "bg-teal-950/20", "text-teal-400");
-                    player.score += 50;
-                    document.getElementById("live-score").innerText = player.score;
-                } else {
-                    badge.classList.add("border-red-500", "bg-red-950/20", "text-red-400");
-                }
+            }
 
-                // Check audit selection triggers
-                if (player.act2Selection.length === 3) {
-                    const isAllCorrect = player.act2Selection.includes('fee') && player.act2Selection.includes('area') && player.act2Selection.includes('avail');
-                    if (isAllCorrect) {
-                        error.classList.add("hidden");
-                        document.getElementById("act2-match-area").classList.remove("hidden");
-                    } else {
-                        error.innerText = "⚠️ AUDIT REPORT EXCEPTION: Plausible distractors selected. Some chosen fields do not affect core service specs (e.g., color or age).";
-                        error.classList.remove("hidden");
-                    }
+            // Check if all are professional
+            let isPerfect = true;
+            for (let step in selectedBlocks) {
+                if (selectedBlocks[step] !== 'professional') {
+                    isPerfect = false;
                 }
             }
-        }
 
-        function checkAct2Match(choice) {
-            const error = document.getElementById("act2-error");
-            const tipBox = document.getElementById("language-tip-box");
-            const tipText = document.getElementById("language-tip-text");
+            if (isPerfect) {
+                // Happy fanfare
+                playTone(523.25, 'sine', 0.1); // C5
+                setTimeout(() => playTone(659.25, 'sine', 0.1), 100); // E5
+                setTimeout(() => playTone(783.99, 'sine', 0.1), 200); // G5
+                setTimeout(() => playTone(1046.50, 'sine', 0.3), 300); // C6
 
-            if (choice === 2) {
-                player.score += 100;
-                document.getElementById("live-score").innerText = player.score;
-                error.classList.add("hidden");
-                tipBox.classList.add("hidden");
-                alert("✨ PARAMETERS HARMONIZED! Guided matching arena clear.");
-                showScreen("screen-act3");
-            } else if (choice === 1) {
-                error.innerText = "⚠️ ENQUIRY DENIED";
-                error.classList.remove("hidden");
-                tipText.innerHTML = "<strong>'When can you come? I need it quickly.'</strong> is too casual and direct. It lacks a polite formula starter (e.g., 'Could you kindly...').";
-                tipBox.classList.remove("hidden");
+                feedback.innerHTML = '<p class="success-text">✔ ENQUIRY SENT SUCCESSFULLY! The enquiry is highly professional and standards-compliant.</p>';
+                updateScore(500, "Helpdesk Hero");
+                document.getElementById('quest4').classList.remove('hidden');
             } else {
-                error.innerText = "⚠️ ENQUIRY DENIED";
-                error.classList.remove("hidden");
-                tipText.innerHTML = "<strong>'Could you explain when your service is usually available?'</strong> is polite, but it is too vague. To schedule a technician, we must specify a target day or hour.";
-                tipBox.classList.remove("hidden");
+                playTone(150, 'sawtooth', 0.3);
+                feedback.innerHTML = '<p class="error-text">❌ TRANSACTION REJECTED. The enquiry lacks professional politeness or uses informal slang.</p>';
             }
-        }
-
-        // ACTIVITY 3: ENQUIRY QUALITY RANKING
-        function verifyAct3Ranking() {
-            const rA = document.getElementById("rank-A").value;
-            const rB = document.getElementById("rank-B").value;
-            const rC = document.getElementById("rank-C").value;
-            const error = document.getElementById("act3-error");
-
-            if (rA === "2" && rB === "1" && rC === "3") {
-                player.score += 150;
-                document.getElementById("live-score").innerText = player.score;
-                error.classList.add("hidden");
-                document.getElementById("act3-reason-area").classList.remove("hidden");
-            } else {
-                error.innerText = "❌ AUDIT DISCREPANCY: That arrangement is inefficient. Consider completeness, specificity and deadlines to re-rank.";
-                error.classList.remove("hidden");
-            }
-        }
-
-        function checkAct3Reason(choice) {
-            const error = document.getElementById("act3-error");
-            if (choice === 2) {
-                player.score += 100;
-                document.getElementById("live-score").innerText = player.score;
-                error.classList.add("hidden");
-                alert("🛡️ EVALUATION COMPLETE: Proceeding to circuit reconstruction.");
-                showScreen("screen-act4");
-                initAct4Reconstruction();
-            } else {
-                error.innerText = "❌ EXCEPTION: Long sentences or complex vocabulary do not inherently guarantee professional effectiveness. Purpose and parameters drive quality.";
-                error.classList.remove("hidden");
-            }
-        }
-
-        // ACTIVITY 4: BUILD THE COMMUNICATION CHAIN
-        let act4FilteredSentences = [];
-        
-        function initAct4Reconstruction() {
-            act4FilteredSentences = [...sentencesAct4Raw];
-            player.act4Order = Array(6).fill(null);
-            player.act4Labels = {};
-            
-            document.getElementById("act4-taskA").classList.remove("hidden");
-            document.getElementById("act4-taskB").classList.add("hidden");
-            document.getElementById("btn-act4-verify").classList.add("hidden");
-            document.getElementById("btn-act4-next").classList.add("hidden");
-            document.getElementById("act4-feedback").innerText = "Complete Task A first to start assembly...";
-            document.getElementById("act4-feedback").className = "text-xs text-slate-400";
-
-            renderAct4TaskA();
-        }
-
-        function renderAct4TaskA() {
-            const container = document.getElementById("act4-filter-box");
-            container.innerHTML = '';
-
-            act4FilteredSentences.forEach(s => {
-                const btn = document.createElement("button");
-                btn.id = `filter-${s.id}`;
-                btn.className = "w-full text-left bg-slate-950 hover:bg-slate-900 border border-slate-800 p-3 rounded-lg text-xs leading-relaxed transition";
-                btn.innerHTML = `<span class="text-teal-400 mr-2 font-mono">•</span> ${s.text}`;
-                btn.onclick = () => removeIrrelevantSentence(s);
-                container.appendChild(btn);
-            });
-        }
-
-        function removeIrrelevantSentence(s) {
-            if (s.type === "irrelevant") {
-                player.score += 100;
-                document.getElementById("live-score").innerText = player.score;
-                
-                // Fade effect and move to Task B
-                const btn = document.getElementById(`filter-${s.id}`);
-                btn.className = "w-full text-left bg-emerald-950/20 border border-emerald-500/30 p-3 rounded-lg text-xs transition line-through text-emerald-500/50";
-                
-                alert("✨ SECURITY AUDIT CLEAR: Noise detected and deleted. Accessing chronological circuit assembly slots.");
-                setTimeout(() => {
-                    document.getElementById("act4-taskA").classList.add("hidden");
-                    document.getElementById("act4-taskB").classList.remove("hidden");
-                    document.getElementById("btn-act4-verify").classList.remove("hidden");
-                    document.getElementById("act4-feedback").innerText = "Mount unplaced blocks into correct sequential order slots.";
-                    
-                    // Filter list
-                    act4FilteredSentences = act4FilteredSentences.filter(x => x.type === "valid");
-                    renderAct4Assembly();
-                }, 1000);
-            } else {
-                alert("❌ FAULT DETECTED: That sentence is critical to the communication flow! Do not delete.");
-            }
-        }
-
-        function renderAct4Assembly() {
-            const slotContainer = document.getElementById("assembly-slots");
-            const poolContainer = document.getElementById("assembly-pool");
-
-            slotContainer.innerHTML = '';
-            poolContainer.innerHTML = '';
-
-            // Load Slots 1-6
-            player.act4Order.forEach((item, idx) => {
-                const stepNum = idx + 1;
-                const div = document.createElement("div");
-
-                if (item === null) {
-                    div.className = "border border-dashed border-slate-800 bg-slate-950/40 p-3 rounded-lg text-xs text-slate-500 flex justify-between items-center h-12";
-                    div.innerHTML = `<span>[Slot ${stepNum} Area]</span>`;
-                } else {
-                    div.className = "bg-slate-950 border border-teal-500/30 p-3 rounded-lg text-xs flex flex-col space-y-2";
-                    div.innerHTML = `
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-teal-400">Position ${stepNum} Sequence</span>
-                            <button onclick="unmountAct4Item(${idx})" class="text-red-400 hover:text-red-300 text-xs"><i class="fa-solid fa-circle-xmark"></i></button>
-                        </div>
-                        <p class="text-slate-200">${item.text}</p>
-                        <div class="flex items-center space-x-2 pt-1 border-t border-slate-900">
-                            <span class="text-[10px] text-slate-500 uppercase">Identify Block Function:</span>
-                            <select id="label-select-${idx}" class="bg-slate-900 border border-slate-700 text-teal-400 text-[10px] rounded p-0.5" onchange="assignLabel(${idx})">
-                                <option value="">Select Label...</option>
-                                <option value="GREET" ${player.act4Labels[idx] === 'GREET' ? 'selected' : ''}>GREET</option>
-                                <option value="PURPOSE" ${player.act4Labels[idx] === 'PURPOSE' ? 'selected' : ''}>PURPOSE</option>
-                                <option value="ASK" ${player.act4Labels[idx] === 'ASK' ? 'selected' : ''}>ASK</option>
-                                <option value="RESPOND" ${player.act4Labels[idx] === 'RESPOND' ? 'selected' : ''}>RESPOND</option>
-                                <option value="CLARIFY" ${player.act4Labels[idx] === 'CLARIFY' ? 'selected' : ''}>CLARIFY</option>
-                                <option value="CLOSE" ${player.act4Labels[idx] === 'CLOSE' ? 'selected' : ''}>CLOSE</option>
-                            </select>
-                        </div>
-                    `;
-                }
-                slotContainer.appendChild(div);
-            });
-
-            // Load Pool
-            act4FilteredSentences.forEach(item => {
-                const isPlaced = player.act4Order.some(x => x && x.id === item.id);
-                if (!isPlaced) {
-                    const btn = document.createElement("button");
-                    btn.className = "w-full text-left bg-slate-900 hover:bg-slate-850 border border-slate-800 p-2.5 rounded-lg text-xs transition";
-                    btn.innerHTML = item.text;
-                    btn.onclick = () => mountAct4Item(item);
-                    poolContainer.appendChild(btn);
-                }
-            });
-        }
-
-        // SEQUENCE ASSEMBLY FUNCTIONS
-        function mountAct4Item(item) {
-            const nextIdx = player.act4Order.findIndex(x => x === null);
-            if (nextIdx !== -1) {
-                player.act4Order[nextIdx] = item;
-                renderAct4Assembly();
-            }
-        }
-
-        function unmountAct4Item(idx) {
-            player.act4Order[idx] = null;
-            delete player.act4Labels[idx];
-            renderAct4Assembly();
-        }
-
-        function assignLabel(idx) {
-            const selectEl = document.getElementById(`label-select-${idx}`);
-            player.act4Labels[idx] = selectEl.value;
-        }
-
-        function verifyAct4Layout() {
-            const feedback = document.getElementById("act4-feedback");
-            const isFull = player.act4Order.every(x => x !== null);
-
-            if (!isFull) {
-                feedback.innerText = "❌ SEQUENCE ERRORED: Please mount elements into all 6 slots first.";
-                feedback.className = "text-xs text-red-400 font-bold";
-                return;
-            }
-
-            const isOrderCorrect = player.act4Order.every((item, idx) => item.correctStep === idx + 1);
-            const isLabelsCorrect = player.act4Order.every((item, idx) => player.act4Labels[idx] === item.label);
-
-            if (isOrderCorrect && isLabelsCorrect) {
-                player.score += 250;
-                document.getElementById("live-score").innerText = player.score;
-                feedback.innerText = "✨ CHANNEL SECURED: Synchronized network pipeline completely online!";
-                feedback.className = "text-xs text-emerald-400 font-bold glow-green";
-                
-                document.getElementById("btn-act4-verify").classList.add("hidden");
-                document.getElementById("btn-act4-next").classList.remove("hidden");
-            } else {
-                feedback.innerText = "❌ CALIBRATION FAULT: Order mismatch or incorrect functional label applied. Try again.";
-                feedback.className = "text-xs text-red-400 font-bold";
-            }
-        }
-
-        function toggleAct4Hint() {
-            const p = document.getElementById("act4-hint-panel");
-            p.classList.toggle("hidden");
-        }
-
-        function resetAct4() {
-            initAct4Reconstruction();
-        }
-
-        // SCREEN 7: FINAL AUDIT (INBOX CHALLENGE)
-        function goToAudit() {
-            showScreen("screen-audit");
-        }
-
-        function evaluateAuditChoice(choice) {
-            if (choice === 3) {
-                player.score += 150;
-                document.getElementById("live-score").innerText = player.score;
-                alert("🏆 PERFORMANCE AUDIT COMPILED! Normal microgrid operations fully restored.");
-                completeAssessment();
-            } else {
-                alert("❌ AUDIT FAULT: Check the supplier response parameters again. The Calibration Fee parameter was completely ignored!");
-            }
-        }
-
-        // FINAL COMPLETE SCREEN
-        function completeAssessment() {
-            showScreen("screen-cert");
-            document.getElementById("cert-score").innerText = `${player.score} XP`;
-            document.getElementById("cert-id").innerText = `DUE-2026-OK-${Math.floor(1000 + Math.random() * 9000)}`;
-        }
-
-        function resetSimulator() {
-            player = {
-                name: "Trainee",
-                avatar: "user-gear",
-                color: "#14b8a6",
-                score: 0,
-                screen: "screen-welcome",
-                act2Selection: [],
-                act4Order: [],
-                act4Labels: {}
-            };
-            document.getElementById("live-score").innerText = 0;
-            document.getElementById("username-input").value = '';
-            
-            // Act 1 reset
-            document.getElementById("act1-phaseA").classList.remove("hidden");
-            document.getElementById("act1-phaseB").classList.add("hidden");
-            document.getElementById("antenna-status").innerText = "CALIBRATING";
-            document.getElementById("antenna-status").className = "text-orange-400 font-bold";
-
-            // Act 2 reset
-            document.getElementById("act2-match-area").classList.add("hidden");
-            document.querySelectorAll("#act2-detectors button").forEach(b => {
-                b.className = "p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 hover:border-teal-500/50 transition";
-            });
-
-            showScreen("screen-welcome");
         }
     </script>
 </body>
 </html>
+Gemini Notebook can be inaccurate; please double-check its responses.
+Reply ready.
